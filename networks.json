@@ -2,6 +2,9 @@
   "matic": {
     "RootForwarder": {
       "address": "0x5A573F05863686546d25271866de370FE6ee1B16"
+    },
+    "RootFactory": {
+      "address": "0x23C35b799Bad23288BCb4A27f5B8713e42ec344a"
     }
   }
 }

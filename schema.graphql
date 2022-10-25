@@ -4,3 +4,31 @@ type ExampleEntity @entity {
   user: Bytes! # address
   destination: Bytes! # address
 }
+type Initialized @entity {
+  id: ID!
+  version: Int! # uint8
+}
+
+type NewProject @entity {
+  id: ID!
+  creator: Bytes! # address
+  standard: Int! # uint8
+  project: Bytes! # address
+  name: String! # string
+}
+
+type RootFactoryOwnershipTransferred @entity {
+  id: ID!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+}
+
+type Paused @entity {
+  id: ID!
+  account: Bytes! # address
+}
+
+type Unpaused @entity {
+  id: ID!
+  account: Bytes! # address
+}
