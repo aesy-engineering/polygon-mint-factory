@@ -1,6 +1,8 @@
 specVersion: 0.0.4
 schema:
   file: ./schema.graphql
+features:
+  - fullTextSearch
 dataSources:
   - kind: ethereum
     name: RootForwarder
@@ -8,21 +10,19 @@ dataSources:
     source:
       address: "0x5A573F05863686546d25271866de370FE6ee1B16"
       abi: RootForwarder
+      startBlock: 34780493
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - MetaTransaction
-        - OwnershipTransferred
       abis:
         - name: RootForwarder
           file: ./abis/RootForwarder.json
       eventHandlers:
         - event: MetaTransaction(indexed address,indexed address,uint256,bytes)
           handler: handleMetaTransaction
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
       file: ./src/root-forwarder.ts
   - kind: ethereum
     name: RootFactory
@@ -30,28 +30,40 @@ dataSources:
     source:
       address: "0x23C35b799Bad23288BCb4A27f5B8713e42ec344a"
       abi: RootFactory
+      startBlock: 34780659
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Initialized
         - NewProject
-        - RootFactoryOwnershipTransferred
-        - Paused
-        - Unpaused
       abis:
         - name: RootFactory
           file: ./abis/RootFactory.json
       eventHandlers:
-        - event: Initialized(uint8)
-          handler: handleInitialized
         - event: NewProject(indexed address,indexed uint8,address,string)
           handler: handleNewProject
-        - event: RootFactoryOwnershipTransferred(indexed address,indexed address)
-          handler: handleRootFactoryOwnershipTransferred
-        - event: Paused(address)
-          handler: handlePaused
-        - event: Unpaused(address)
-          handler: handleUnpaused
       file: ./src/root-factory.ts
+templates:
+  - name: RootCollectible
+    kind: ethereum/contract
+    network: matic
+    source:
+      abi: RootCollectible
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      file: ./src/collectible.ts
+      entities:
+        - Collection
+      abis:
+        - name: RootCollectible
+          file: ./abis/RootCollectible.json
+      eventHandlers:
+        - event: TransferSingle(indexed address,indexed address,indexed address,uint256,uint256)
+          handler: handleTransferSingle
+        - event: TransferBatch(indexed address,indexed address,indexed address,uint256[],uint256[])
+          handler: handleTransferBatch
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApproval

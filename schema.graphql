@@ -1,34 +1,101 @@
-type ExampleEntity @entity {
-  id: ID!
-  count: BigInt!
-  user: Bytes! # address
-  destination: Bytes! # address
-}
-type Initialized @entity {
-  id: ID!
-  version: Int! # uint8
+type _Schema_
+  @fulltext(
+    name: "collectionSearch"
+    language: en
+    algorithm: rank
+    include: [{ entity: "Collection", fields: [{ name: "name" }] }]
+  )
+
+enum NftStandard {
+  ERC1155
+  ERC721
 }
 
-type NewProject @entity {
+# General Entities:  referenced from any handler
+type Account @entity {
+  "Wallet Address"
   id: ID!
-  creator: Bytes! # address
-  standard: Int! # uint8
-  project: Bytes! # address
-  name: String! # string
+  "Collections created by account"
+  projects: [Collection!]! @derivedFrom(field: "creator")
+  metaTxs: [MetaTransaction!]! @derivedFrom(field: "from")
+  transfersFrom: [Transfer!]! @derivedFrom(field: "senderAddress")
+  transfersTo: [Transfer!]! @derivedFrom(field: "receiverAddress")
+  balances: [Balance!]! @derivedFrom(field: "account")
+  approvals: [Approval!]! @derivedFrom(field: "account")
 }
 
-type RootFactoryOwnershipTransferred @entity {
+type Contract @entity(immutable: true){
+  "Contract Address"
   id: ID!
-  previousOwner: Bytes! # address
-  newOwner: Bytes! # address
+  "Collection reference if it's a collection"
+  collection: Collection
 }
 
-type Paused @entity {
+# All collection is a contract, All contract need not be a collection
+type Collection @entity {
+  "Collection Address"
   id: ID!
-  account: Bytes! # address
+  creator: Account!
+  name: String!
+  type: NftStandard!
+  contract: [Contract!]! @derivedFrom(field: "collection")
+  currentSupply: BigInt!
 }
 
-type Unpaused @entity {
+# Forwarder Entity
+type MetaTransaction @entity(immutable: true){
+  "TxHash-logIndex of the event MetaTransaction"
   id: ID!
-  account: Bytes! # address
+  from: Account!
+  to: Contract!
+  nonce: BigInt!
+  signature: Bytes!
+}
+
+# Token Entities 
+type Token @entity{
+  "polygon/collectionAddr/tokenId"
+  id: ID!
+  collection: Collection!
+  identifier: BigInt!
+  transfers: [Transfer!]! @derivedFrom(field: "token")
+  balances: [Balance!]! @derivedFrom(field: "token")
+}
+
+type Transfer @entity(immutable: true){
+  id: ID!
+  transaction: Transaction!
+  collection: Collection!
+  token: Token!
+  operator: Account
+  senderAddress: Account!
+  receiverAddress: Account!
+  value: BigInt!
+}
+
+type Balance @entity {
+  "polygon/collectionAddr/tokenId/accountAddr"
+  id: ID!
+  token: Token!
+  account: Account!
+  value: BigInt!
+}
+
+type Approval @entity {
+  "collectionAddr/accountAddr/operatorAddr"
+  id: ID!
+  account: Account!
+  collection: Collection!
+  operator: Account!
+  approved: Boolean!
+}
+
+type Transaction @entity(immutable: true){
+  id: ID!
+  timestamp: Int!
+  blockNumber: Int!
+  transactionFrom: Account!
+  # Not deriving because of some loop, subgraph deployment fails
+  transfers: [Transfer!]!
+  gasPrice: BigInt
 }

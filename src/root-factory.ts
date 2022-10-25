@@ -1,60 +1,26 @@
 import {
-  Initialized as InitializedEvent,
-  NewProject as NewProjectEvent,
-  RootFactoryOwnershipTransferred as RootFactoryOwnershipTransferredEvent,
-  Paused as PausedEvent,
-  Unpaused as UnpausedEvent
+  NewProject
 } from "../generated/RootFactory/RootFactory"
-import {
-  Initialized,
-  NewProject,
-  RootFactoryOwnershipTransferred,
-  Paused,
-  Unpaused
-} from "../generated/schema"
 
-export function handleInitialized(event: InitializedEvent): void {
-  let entity = new Initialized(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.version = event.params.version
-  entity.save()
+import { fetchAccount, fetchCollection } from "./utils/contract"
+
+import { RootCollectible } from "../generated/templates"
+
+export function handleNewProject(ProjectEvent: NewProject): void {
+  // Entities can be loaded from the store using a string ID; this ID
+  // needs to be unique across all entities of the same type
+  let creatorEntity = fetchAccount(ProjectEvent.params.creator)
+  let collectionEntity = fetchCollection(ProjectEvent.params.project)
+  // Create new Collection source
+  RootCollectible.create(ProjectEvent.params.project)
+  // Entity fields can be set based on event parameters
+  collectionEntity.creator = creatorEntity.id
+  collectionEntity.name = ProjectEvent.params.name
+  collectionEntity.type = (ProjectEvent.params.standard == 1)? "ERC1155" : "ERC721"
+  // collectionEntity.type = "ERC1155"
+  // Entities can be written to the store with `.save()`
+  creatorEntity.save()
+  collectionEntity.save()
+
 }
 
-export function handleNewProject(event: NewProjectEvent): void {
-  let entity = new NewProject(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.creator = event.params.creator
-  entity.standard = event.params.standard
-  entity.project = event.params.project
-  entity.name = event.params.name
-  entity.save()
-}
-
-export function handleRootFactoryOwnershipTransferred(
-  event: RootFactoryOwnershipTransferredEvent
-): void {
-  let entity = new RootFactoryOwnershipTransferred(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.previousOwner = event.params.previousOwner
-  entity.newOwner = event.params.newOwner
-  entity.save()
-}
-
-export function handlePaused(event: PausedEvent): void {
-  let entity = new Paused(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.account = event.params.account
-  entity.save()
-}
-
-export function handleUnpaused(event: UnpausedEvent): void {
-  let entity = new Unpaused(
-    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-  )
-  entity.account = event.params.account
-  entity.save()
-}
