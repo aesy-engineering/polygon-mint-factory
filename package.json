@@ -8,7 +8,8 @@
     "create-local": "graph create --node http://localhost:8020/ adeebabdulsalam/polygon-mint-factory",
     "remove-local": "graph remove --node http://localhost:8020/ adeebabdulsalam/polygon-mint-factory",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 adeebabdulsalam/polygon-mint-factory",
-    "test": "graph test"
+    "test": "graph test",
+    "auth": "graph auth --product hosted-service <ACCESS_TOKEN>"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.35.0",

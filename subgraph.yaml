@@ -44,47 +44,47 @@ dataSources:
         - event: NewProject(indexed address,indexed uint8,address,string)
           handler: handleNewProject
       file: ./src/root-factory.ts
-  - kind: ethereum
-    name: ClaimReferral
-    network: matic
-    source:
-      address: "0x5186864f7e384BA3DBaB08D813f4C86917c1fa06"
-      abi: ClaimReferral
-      startBlock: 35449183
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - ClaimedWithReferral
-      abis:
-        - name: ClaimReferral
-          file: ./abis/ClaimReferral.json
-      eventHandlers:
-        - event: ClaimedWithReferral(indexed address,indexed address,indexed uint256,address,string)
-          handler: handleClaimedWithReferral
-      file: ./src/claim.ts
-  - kind: ethereum/contract
-    name: SeaPort
-    network: matic
-    source:
-      address: "0x00000000006c3852cbef3e08e8df289169ede581"
-      abi: SeaPort
-      startBlock: 34780659 
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - Sale
-      abis:
-        - name: SeaPort
-          file: ./abis/Seaport.json             
-      eventHandlers:
-        - event: OrderFulfilled(bytes32,indexed address,indexed address,address,(uint8,address,uint256,uint256)[],(uint8,address,uint256,uint256,address)[])
-          handler: handleOrderFulfilled
-          receipt: true
-      file: ./src/seaport.ts
+  # - kind: ethereum
+  #   name: ClaimReferral
+  #   network: matic
+  #   source:
+  #     address: "0x5186864f7e384BA3DBaB08D813f4C86917c1fa06"
+  #     abi: ClaimReferral
+  #     startBlock: 35449183
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - ClaimedWithReferral
+  #     abis:
+  #       - name: ClaimReferral
+  #         file: ./abis/ClaimReferral.json
+  #     eventHandlers:
+  #       - event: ClaimedWithReferral(indexed address,indexed address,indexed uint256,address,string)
+  #         handler: handleClaimedWithReferral
+  #     file: ./src/claim.ts
+  # - kind: ethereum/contract
+  #   name: SeaPort
+  #   network: matic
+  #   source:
+  #     address: "0x00000000006c3852cbef3e08e8df289169ede581"
+  #     abi: SeaPort
+  #     startBlock: 34780659 
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.7
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Sale
+  #     abis:
+  #       - name: SeaPort
+  #         file: ./abis/Seaport.json             
+  #     eventHandlers:
+  #       - event: OrderFulfilled(bytes32,indexed address,indexed address,address,(uint8,address,uint256,uint256)[],(uint8,address,uint256,uint256,address)[])
+  #         handler: handleOrderFulfilled
+  #         receipt: true
+  #     file: ./src/seaport.ts
 templates:
   - name: RootCollectible
     kind: ethereum/contract

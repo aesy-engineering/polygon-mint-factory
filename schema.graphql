@@ -100,26 +100,26 @@ type Transaction @entity(immutable: true){
   gasPrice: BigInt
 }
 
-type ClaimedWithReferral @entity(immutable: true){
-  id: ID!
-  from: Account! # address
-  tokenAddress: Bytes! # address
-  tokenId: BigInt! # uint256
-  by: Account! # address
-  referral: String! # string
-}
+# type ClaimedWithReferral @entity(immutable: true){
+#   id: ID!
+#   from: Account! # address
+#   tokenAddress: Bytes! # address
+#   tokenId: BigInt! # uint256
+#   by: Account! # address
+#   referral: String! # string
+# }
 
-type Sale @entity(immutable: true){
-  id: ID!
-  orderHash: Bytes!
-  offerer: Account!
-  fulfiller: Account!
-  offer: Token!
-  "Number of Tokens sold"
-  quantity: BigInt!
-  "Total Paid Amount only native for now"
-  totalAmount: BigInt!
-  platformFee: BigInt!
-  saleAmount: BigInt!
-  royaltyAmount: BigInt 
-}
+# type Sale @entity(immutable: true){
+#   id: ID!
+#   orderHash: Bytes!
+#   offerer: Account!
+#   fulfiller: Account!
+#   offer: Token!
+#   "Number of Tokens sold"
+#   quantity: BigInt!
+#   "Total Paid Amount only native for now"
+#   totalAmount: BigInt!
+#   platformFee: BigInt!
+#   saleAmount: BigInt!
+#   royaltyAmount: BigInt 
+# }
